@@ -35,14 +35,12 @@ def parse_packet(line):
 
 
 def parse_input(scans):
-    pairs = []
-
-    for i in range(0, len(scans), 3):
-        packet_1 = parse_packet(scans[i])
-        packet_2 = parse_packet(scans[i + 1])
-        pairs.append((packet_1, packet_2))
-
-    return pairs
+    nums = []
+    for line in scans:
+        if line == "":
+            continue
+        nums.append(parse_packet(line))
+    return nums
 
 
 def is_valid(first_packet, second_packet):
@@ -55,7 +53,7 @@ def is_valid(first_packet, second_packet):
                 return a < b
 
         elif type(a) == list and type(b) == list:
-            result = is_valid(a,b)
+            result = is_valid(a, b)
             if result is not None:
                 return result
         else:
@@ -83,6 +81,26 @@ def compare_all_pairs(pairs):
     return count
 
 
+def solve(numbers):
+    packet_divider1 = parse_packet("[[2]]")
+    packet_divider2 = parse_packet("[[6]]")
+    return (numbers.index(packet_divider1)+1) * (numbers.index(packet_divider2)+1)
+
+
+def sort_nums(numbers):
+    sorted_nums = [numbers[0]]
+    for current_num in numbers[1:]:
+        has_placed = False
+        for i, nums in enumerate(sorted_nums):
+            if current_num == nums: continue
+            if is_valid(current_num, nums):
+                has_placed = True
+                sorted_nums.insert(i, current_num)
+                break
+        if not has_placed:
+            sorted_nums.append(current_num)
+    return sorted_nums
 if __name__ == "__main__":
-    pairs = parse_input(scans)
-    print(compare_all_pairs(pairs))
+    numbers = parse_input(scans)
+    numbers = sort_nums(numbers)
+    print(solve(numbers))
