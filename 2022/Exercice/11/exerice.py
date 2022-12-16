@@ -1,7 +1,9 @@
+import math
 import os
 import utils
 
 scans = utils.read_file(os.getcwd() + "\\input.txt")
+product_of_modulos_value = 0
 
 
 class Monkey:
@@ -19,17 +21,17 @@ class Monkey:
         self.activity_score += 1
         self.items.remove(item)
 
-        val= int(self.value_operation) if self.value_operation.isdigit() else item
+        val = int(self.value_operation) if self.value_operation.isdigit() else item
 
         item = item + val if self.is_add else item * val
-        item //= 3
+        item = reduce_item(item)
 
         return item, self.monkey_outcomeTrue if item % self.value_modulo == 0 else self.monkey_outcomeFalse
 
 
 def parse_input(scans):
     monkeys = []
-    for i in range(0, len(scans)+1, 7):
+    for i in range(0, len(scans) + 1, 7):
         items = [int(num) for num in scans[i + 1].split(": ")[1].split(", ")]
         is_add = scans[i + 2].count("+") == 1
         value_operation = scans[i + 2].split("old")[1][3:]
@@ -40,15 +42,16 @@ def parse_input(scans):
         monkeys.append(monkey)
     return monkeys
 
+def reduce_item(item):
+    return item % product_of_modulos_value
 
-def solve(monkeys):
+def monkey_buisness(monkeys):
     monkeys.sort(key=lambda monkey: monkey.activity_score, reverse=True)
     return monkeys[0].activity_score * monkeys[1].activity_score
 
 
 def simulate_rounds(round_count, monkeys):
     for i in range(round_count):
-        print(i)
         for monkey in monkeys:
             for item in monkey.items.copy():
                 new_item, monkey_to_give = monkey.inspect_item(item)
@@ -57,5 +60,6 @@ def simulate_rounds(round_count, monkeys):
 
 if __name__ == "__main__":
     monkeys = parse_input(scans)
-    simulate_rounds(20, monkeys)
-    print(solve(monkeys))
+    product_of_modulos_value = math.prod([monkey.value_modulo for monkey in monkeys])
+    simulate_rounds(10000, monkeys)
+    print(monkey_buisness(monkeys))
