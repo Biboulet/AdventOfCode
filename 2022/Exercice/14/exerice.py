@@ -28,11 +28,14 @@ def parse_input():
                 for x in range(min([coord1[0], coord2[0]]), max([coord1[0], coord2[0]]) +1):
                     map[(x, coord2[1])] = 1
 
+    maxY = max([coord[1] for coord in map.keys() if map[coord] == 1])
+    for x in range(1000):
+        map[(x,maxY+2)] = 1
+
     return map
 
 
 def simulate_sand_drop(map):
-    maxY = max([coord[1] for coord in map.keys() if map[coord] == 1])
     sand_pos = (500,0)
     sand_count = 0
     while True:
@@ -50,6 +53,8 @@ def simulate_sand_drop(map):
                 map[sand_pos] = 1
 
             else:
+                if sand_pos == (500, 0):
+                    return sand_count +1
                 sand_pos = (500, 0)
                 sand_count+=1
                 print(sand_count)
@@ -60,8 +65,6 @@ def simulate_sand_drop(map):
             sand_pos = (sand_pos[0], sand_pos[1] + 1)
             map[sand_pos] = 1
 
-        if sand_pos[1] > maxY:
-            return sand_count
 
 
 if __name__ == "__main__":
