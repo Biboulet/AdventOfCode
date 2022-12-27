@@ -21,6 +21,8 @@ class Vector2:
     def __neg__(self):
         return Vector2(-self.x, -self.y)
 
+    def __hash__(self):
+        return (self.x*73856093)^(self.y*19349663)
 class Vector3:
     def __init__(self, _x, _y, _z):
         self.x = _x

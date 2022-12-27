@@ -1,5 +1,6 @@
 import os
 import utils
+import re
 
 scans = utils.read_file(os.getcwd() + "\\input.txt")
 
