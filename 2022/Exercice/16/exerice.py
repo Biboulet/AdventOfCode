@@ -86,18 +86,50 @@ def get_pressure_openned(first_player, second_player, distance_between_valves):
     return total
 
 
+def get_best_next_position(distance_between_valves, p1_pos, important_valves, i):
+    max_pressure = 0
+    pos = None
+
+    for valve in important_valves:
+        pressure_openned = valves_pressure[valve] * (26 - i - distance_between_valves[(p1_pos, valve)] - 1)
+        if pressure_openned > max_pressure:
+            max_pressure = pressure_openned
+            pos = valve
+
+    return pos
+
 def get_max_pressure_released_p2(distance_between_valves):
     important_valves = [key for key, val in valves_pressure.items() if val != 0]
 
-    combination = []
-    #create combination
-    first_player = []
-    second_player = []
+    pressure = 0
+    p1_pos = "AA"
+    p2_pos = "AA"
+    p1_next_turn = 0
+    p2_next_turn = 0
 
-    max_pressure = 0
-    for p1_list, p2_list in combination:
-        max_pressure = max(max_pressure, get_pressure_openned(p1_list, p2_list, distance_between_valves))
-    print(max_pressure)
+    for i in range(26):
+        if i == p1_next_turn:
+
+            pressure += valves_pressure[p1_pos] * (26-i)
+
+            new_pos = get_best_next_position(distance_between_valves, p1_pos, important_valves, i)
+            if new_pos is not None:
+                p1_next_turn += distance_between_valves[(p1_pos, new_pos)] + 1
+                p1_pos = new_pos
+                important_valves.remove(new_pos)
+
+        if i == p2_next_turn:
+            pressure += valves_pressure[p2_pos] * (26 - i)
+
+            new_pos = get_best_next_position(distance_between_valves, p2_pos, important_valves, i)
+            if new_pos is not None:
+                p2_next_turn += distance_between_valves[(p2_pos, new_pos)] + 1
+                p2_pos = new_pos
+                important_valves.remove(new_pos)
+
+    return pressure
+
+
 
 
 if __name__ == "__main__":
