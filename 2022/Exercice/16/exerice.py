@@ -6,6 +6,7 @@ valves_pressure = {}
 valves_linked = {}
 all_best_pressures = {}
 
+
 # rajouter des s
 def parse_input(scans):
     pressure = {}
@@ -21,15 +22,13 @@ def parse_input(scans):
     return pressure, linked
 
 
-
 def get_pressure_opening(current_valve, openned_valves, minutes=1, pressure=0):
-
     if (current_valve, tuple(openned_valves), minutes) in all_best_pressures.keys():
         return all_best_pressures[(current_valve, tuple(openned_valves), minutes)]
 
     pressure += sum([valves_pressure[openned] for openned in openned_valves])
 
-    if minutes == 30:
+    if minutes == 26:
         return pressure
 
     sub_pressures = []
@@ -37,14 +36,48 @@ def get_pressure_opening(current_valve, openned_valves, minutes=1, pressure=0):
         sub_pressures.append(get_pressure_opening(current_valve, openned_valves + [current_valve], minutes + 1))
 
     for neighbour in valves_linked[current_valve]:
-        sub_pressures.append(get_pressure_opening(neighbour, openned_valves, minutes+1))
+        sub_pressures.append(get_pressure_opening(neighbour, openned_valves, minutes + 1))
 
     all_best_pressures[(current_valve, tuple(openned_valves), minutes)] = pressure + max(sub_pressures)
     return pressure + max(sub_pressures)
 
 
+def dijkstrat_distance(source, dest):
+    dist = {valve: 999 for valve in valves_linked.keys()}
+    dist[source] = 0
+    graph = list(valves_linked.keys())
+
+    while graph:
+        closest_valve = min(graph, key=lambda vertex: dist[vertex])
+        graph.remove(closest_valve)
+
+        if closest_valve == dest:
+            return dist[closest_valve]
+
+        for neighbour in valves_linked[closest_valve]:
+            if dist[closest_valve] + 1 < dist[neighbour]:
+                dist[neighbour] = dist[closest_valve] + 1
+
+
+def get_all_distance():
+    distance_between_valves = {}
+    important_valves = ["AA"] + [key for key, val in valves_pressure.items() if val != 0]
+
+    for valve in important_valves:
+        for valve2 in important_valves:
+            distance_between_valves[(valve, valve2)] = dijkstrat_distance(valve, valve2)
+
+    return distance_between_valves
+
+
+def get_max_pressure_released_p2(distance_between_valves):
+    important_valves = ["AA"] + [key for key, val in valves_pressure.items() if val != 0]
+
+
+
+
+
 if __name__ == "__main__":
     valves_pressure, valves_linked = parse_input(scans)
-    print(get_pressure_opening("AA", []))
-
-
+    distance_between_valves = get_all_distance()
+    print(get_max_pressure_released_p2(distance_between_valves))

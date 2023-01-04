@@ -13,45 +13,50 @@ class BluePrints:
         self.geode_robot_cost = geode_robot_cost
 
 # inventory : [r ore, r clay, r obsidian, r geode, ore, clay, obsidian, geode] len = 8
-def get_maximum_geode(blueprint, inventory, minutes):
+def get_maximum_geode(blueprint, inventory, minutes=0):
     #update les ressources
     inventory[4] += inventory[0]
     inventory[5] += inventory[1]
     inventory[6] += inventory[2]
     inventory[7] += inventory[3]
 
-    if minutes == 1:
+    if minutes == 15:
         return inventory[7]
 
     sub_results = []
 
+    #buger pour les
     #on fait rien
-    sub_results.append(get_maximum_geode(blueprint, inventory.copy(), minutes-1))
+    sub_results.append(get_maximum_geode(blueprint, inventory.copy(), minutes+1))
     # on construit un r ore
     if inventory[4] >= blueprint.ore_robot_cost:
-        inventory[4] -= blueprint.ore_robot_cost
-        inventory[0] += 1
-        sub_results.append(get_maximum_geode(blueprint, inventory.copy(), minutes-1))
+        new_inventory = inventory.copy()
+        new_inventory[4] -= blueprint.ore_robot_cost
+        new_inventory[0] += 1
+        sub_results.append(get_maximum_geode(blueprint, new_inventory, minutes+1))
 
     # on construit un r clay
     if inventory[4] >= blueprint.clay_robot_cost:
-        inventory[4] -= blueprint.clay_robot_cost
-        inventory[1] += 1
-        sub_results.append(get_maximum_geode(blueprint, inventory.copy(), minutes-1))
+        new_inventory = inventory.copy()
+        new_inventory[4] -= blueprint.clay_robot_cost
+        new_inventory[1] += 1
+        sub_results.append(get_maximum_geode(blueprint, new_inventory, minutes+1))
 
     # on construit un r obsi
     if inventory[4] >= blueprint.obsidian_robot_cost[0] and inventory[5] >= blueprint.obsidian_robot_cost[1]:
-        inventory[4] -= blueprint.obsidian_robot_cost[0]
-        inventory[5] -= blueprint.obsidian_robot_cost[1]
-        inventory[2] += 1
-        sub_results.append(get_maximum_geode(blueprint, inventory.copy(), minutes-1))
+        new_inventory = inventory.copy()
+        new_inventory[4] -= blueprint.obsidian_robot_cost[0]
+        new_inventory[5] -= blueprint.obsidian_robot_cost[1]
+        new_inventory[2] += 1
+        sub_results.append(get_maximum_geode(blueprint, new_inventory, minutes+1))
 
     # on construit un r geode
     if inventory[4] >= blueprint.geode_robot_cost[0] and inventory[6] >= blueprint.geode_robot_cost[1]:
-        inventory[4] -= blueprint.geode_robot_cost[0]
-        inventory[6] += blueprint.geode_robot_cost[1]
-        inventory[3] += 1
-        sub_results.append(get_maximum_geode(blueprint, inventory.copy(), minutes-1))
+        new_inventory = inventory.copy()
+        new_inventory[4] -= blueprint.geode_robot_cost[0]
+        new_inventory[6] += blueprint.geode_robot_cost[1]
+        new_inventory[3] += 1
+        sub_results.append(get_maximum_geode(blueprint, new_inventory, minutes+1))
 
     return max(sub_results)
 
@@ -59,7 +64,7 @@ def get_all_quality_level(blueprints):
     quality_levels = []
     for i, blueprint in enumerate(blueprints):
         print(i)
-        quality_levels.append((i+1)*get_maximum_geode(blueprint, [1,0,0,0,0,0,0,0], 24))
+        quality_levels.append((i+1)*get_maximum_geode(blueprint, [1,0,0,0,0,0,0,0]))
     return quality_levels
 
 def parse_input(scans):
