@@ -70,11 +70,34 @@ def get_all_distance():
     return distance_between_valves
 
 
+def get_pressure_openned(first_player, second_player, distance_between_valves):
+    total = 0
+
+    for valve_list in [first_player, second_player]:
+        remaining_minutes = 26
+        last_valve = "AA"
+        for valve in valve_list:
+            remaining_minutes -= distance_between_valves[(last_valve, valve)] + 1
+            if remaining_minutes <= 0:
+                break
+            total += valves_pressure[valve] * remaining_minutes
+            last_valve = valve
+
+    return total
+
+
 def get_max_pressure_released_p2(distance_between_valves):
-    important_valves = ["AA"] + [key for key, val in valves_pressure.items() if val != 0]
+    important_valves = [key for key, val in valves_pressure.items() if val != 0]
 
+    combination = []
+    #create combination
+    first_player = []
+    second_player = []
 
-
+    max_pressure = 0
+    for p1_list, p2_list in combination:
+        max_pressure = max(max_pressure, get_pressure_openned(p1_list, p2_list, distance_between_valves))
+    print(max_pressure)
 
 
 if __name__ == "__main__":
