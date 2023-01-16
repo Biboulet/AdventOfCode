@@ -3,44 +3,79 @@ import utils
 import re
 
 scans = utils.read_file(os.getcwd() + "\\input.txt")
+DP = [None] * 2 ** 25
 
 
 class BluePrints:
     def __init__(self, ore_robot_cost, clay_robot_cost, obsidian_robot_cost, geode_robot_cost):
         self.ore_robot_cost = ore_robot_cost
         self.clay_robot_cost = clay_robot_cost
-        self.obsidian_robot_cost = obsidian_robot_cost
-        self.geode_robot_cost = geode_robot_cost
+        self.obsidian_robot_cost_ore = obsidian_robot_cost[0]
+        self.obsidian_robot_cost_clay = obsidian_robot_cost[1]
+        self.geode_robot_cost_ore = geode_robot_cost[0]
+        self.geode_robot_cost_obsidian = geode_robot_cost[1]
 
-# inventory : [r ore, r clay, r obsidian, r geode, ore, clay, obsidian, geode] len = 8
-def get_maximum_geode(blueprint, inventory, minutes=0):
-    #update les ressources
+
+# s2 : faire un system de score pour décider quel est le meilleur robot à constuire
+# 1 point = 3 ore et 9 obsi
+# 9 obsi =
+
+
+
+
+
+class Inventory:
+    def __init__(self, ore, clay, obsidian):
+        self.ore = ore
+        self.clay = clay
+        self.obsidian = obsidian
+
+
+def get_ressources_score(blueprint:BluePrints):
+    score = Inventory(0,0,0)
+
+    #1ere recette
+    score.ore += blueprint.geode_robot_cost_ore
+    score.obsidian += blueprint.geode_robot_cost_obsidian
+
+    #2ème recette
+    score.ore += blueprint.obsidian_robot_cost_ore * score.obsidian
+    score.clay += blueprint.obsidian_robot_cost_clay * score.obsidian
+
+    #3ème recette
+    score.ore += blueprint.clay_robot_cost * score.clay
+
+    return score
+
+# inventory r ore, r clay, r obsidian, r geode, ore, clay, obsidian
+def get_maximum_geode(blueprint, inventory, ressources_score, minutes=0):
+
+    # update les ressources
     inventory[4] += inventory[0]
     inventory[5] += inventory[1]
     inventory[6] += inventory[2]
     inventory[7] += inventory[3]
 
-    if minutes == 15:
+    if minutes == 0:
         return inventory[7]
 
     sub_results = []
 
-    #buger pour les
-    #on fait rien
-    sub_results.append(get_maximum_geode(blueprint, inventory.copy(), minutes+1))
+    # on fait rien
+    sub_results.append(get_maximum_geode(blueprint, inventory.copy(), minutes - 1))
     # on construit un r ore
     if inventory[4] >= blueprint.ore_robot_cost:
         new_inventory = inventory.copy()
         new_inventory[4] -= blueprint.ore_robot_cost
         new_inventory[0] += 1
-        sub_results.append(get_maximum_geode(blueprint, new_inventory, minutes+1))
+        sub_results.append(get_maximum_geode(blueprint, new_inventory, minutes - 1))
 
     # on construit un r clay
     if inventory[4] >= blueprint.clay_robot_cost:
         new_inventory = inventory.copy()
         new_inventory[4] -= blueprint.clay_robot_cost
         new_inventory[1] += 1
-        sub_results.append(get_maximum_geode(blueprint, new_inventory, minutes+1))
+        sub_results.append(get_maximum_geode(blueprint, new_inventory, minutes - 1))
 
     # on construit un r obsi
     if inventory[4] >= blueprint.obsidian_robot_cost[0] and inventory[5] >= blueprint.obsidian_robot_cost[1]:
@@ -48,7 +83,7 @@ def get_maximum_geode(blueprint, inventory, minutes=0):
         new_inventory[4] -= blueprint.obsidian_robot_cost[0]
         new_inventory[5] -= blueprint.obsidian_robot_cost[1]
         new_inventory[2] += 1
-        sub_results.append(get_maximum_geode(blueprint, new_inventory, minutes+1))
+        sub_results.append(get_maximum_geode(blueprint, new_inventory, minutes - 1))
 
     # on construit un r geode
     if inventory[4] >= blueprint.geode_robot_cost[0] and inventory[6] >= blueprint.geode_robot_cost[1]:
@@ -56,16 +91,19 @@ def get_maximum_geode(blueprint, inventory, minutes=0):
         new_inventory[4] -= blueprint.geode_robot_cost[0]
         new_inventory[6] += blueprint.geode_robot_cost[1]
         new_inventory[3] += 1
-        sub_results.append(get_maximum_geode(blueprint, new_inventory, minutes+1))
+        sub_results.append(get_maximum_geode(blueprint, new_inventory, minutes - 1))
 
     return max(sub_results)
+
 
 def get_all_quality_level(blueprints):
     quality_levels = []
     for i, blueprint in enumerate(blueprints):
         print(i)
-        quality_levels.append((i+1)*get_maximum_geode(blueprint, [1,0,0,0,0,0,0,0]))
+        ressources_score = get_ressources_score(blueprint)
+        quality_levels.append((i + 1) * get_maximum_geode(blueprint, [1, 0, 0, 0, 0, 0, 0, 0], ressources_score, 15))
     return quality_levels
+
 
 def parse_input(scans):
     blueprints = []
