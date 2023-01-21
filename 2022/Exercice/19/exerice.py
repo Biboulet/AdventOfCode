@@ -4,14 +4,12 @@ import re
 import time
 
 start_time = time.time()
-
 scans = utils.read_file(os.getcwd() + "\\input.txt")
 
 
 # LISTE D'OPTI:
-#   - pas plus de 7 explemplaire d'un meme robot
-#   - quand on  peux crée un r geode on le fait
-#   - crée un DP
+#   - pas plus d'expemplaire d'un robot de type x que le montant maximal dépensable de la ressource x par tour
+#   - crée une mémoire
 #   - quand ne ressource de trop grande taille (+63) break
 
 class BluePrints:
@@ -23,6 +21,10 @@ class BluePrints:
         self.geode_robot_cost_ore = geode_robot_cost[0]
         self.geode_robot_cost_obsidian = geode_robot_cost[1]
 
+        self.max_robot_ore = max(self.ore_robot_cost, self.clay_robot_cost, self.obsidian_robot_cost_ore, self.geode_robot_cost_ore)
+        self.max_robot_clay = self.obsidian_robot_cost_clay
+        self.max_robot_obsidian = self.geode_robot_cost_obsidian
+
 
 class Inventory:
     def __init__(self, ore=0, clay=0, obsidian=0, geode=0, robot_ore=0, robot_clay=0, robot_obsidian=0, robot_geode=0):
@@ -30,12 +32,11 @@ class Inventory:
         self.clay = clay
         self.obsidian = obsidian
         self.geode = geode
+
         self.ore_robot = robot_ore
         self.clay_robot = robot_clay
         self.obsidian_robot = robot_obsidian
         self.geode_robot = robot_geode
-
-        self.max_robot_num = 7
 
     def copy(self):
         return Inventory(self.ore, self.clay, self.obsidian, self.geode, self.ore_robot, self.clay_robot,
@@ -67,16 +68,16 @@ class Inventory:
         return self
 
     def can_buy_ore_robot(self, blueprint: BluePrints):
-        return self.ore >= blueprint.ore_robot_cost and self.ore_robot < self.max_robot_num
+        return self.ore >= blueprint.ore_robot_cost and self.ore_robot < blueprint.max_robot_ore
 
     def can_buy_clay_robot(self, blueprint: BluePrints):
-        return self.ore >= blueprint.clay_robot_cost and self.clay_robot < self.max_robot_num
+        return self.ore >= blueprint.clay_robot_cost and self.clay_robot < blueprint.max_robot_clay
 
     def can_buy_obsidian_robot(self, blueprint: BluePrints):
-        return self.ore >= blueprint.obsidian_robot_cost_ore and self.clay >= blueprint.obsidian_robot_cost_clay and self.obsidian_robot < self.max_robot_num
+        return self.ore >= blueprint.obsidian_robot_cost_ore and self.clay >= blueprint.obsidian_robot_cost_clay and self.obsidian_robot < blueprint.max_robot_obsidian
 
     def can_buy_geode_robot(self, blueprint: BluePrints):
-        return self.ore >= blueprint.geode_robot_cost_ore and self.obsidian >= blueprint.geode_robot_cost_obsidian and self.geode_robot < self.max_robot_num
+        return self.ore >= blueprint.geode_robot_cost_ore and self.obsidian >= blueprint.geode_robot_cost_obsidian
 
     def update(self):
         self.ore += self.ore_robot
@@ -91,9 +92,9 @@ class Inventory:
         # 64^3 possibilité de ressources, a baisser peut etre pr l'obsi et l'ore (18 bits)
         # ou 32ore * 64clay * 32 obsi (16bits)
 
-        robot_possibility = self.ore_robot + self.clay_robot*2**3 + self.obsidian_robot*2**6
+        robot_possibility = self.ore_robot + self.clay_robot*2**3 + self.obsidian_robot*2**7
         ressource_possibility = self.ore + self.clay *2**6 + self.obsidian * 2**12
-        return minutes + robot_possibility*2**5 + ressource_possibility*2**14
+        return minutes + robot_possibility*2**5 + ressource_possibility*2**15
 
 
 def get_maximum_geode(blueprint: BluePrints, inventory: Inventory, minutes, DP):
@@ -106,6 +107,7 @@ def get_maximum_geode(blueprint: BluePrints, inventory: Inventory, minutes, DP):
     key = inventory.get_key(minutes)
     if DP[key] is not None:
         return DP[key]
+
 
     sub_results = []
 
@@ -147,7 +149,7 @@ def get_all_quality_level(blueprints):
         print(i)
         DP = [None] * 2**32
         inventory = Inventory(robot_ore=1)
-        quality_levels.append((i + 26) * get_maximum_geode(blueprint, inventory, 24, DP))
+        quality_levels.append((i + 1) * get_maximum_geode(blueprint, inventory, 24, DP))
         print(quality_levels)
         del DP
 
