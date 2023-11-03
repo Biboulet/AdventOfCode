@@ -6,6 +6,8 @@ mod exercice2;
 mod exercice3;
 mod exercice4;
 mod exercice5;
+mod exercice6;
+mod exercice7;
 
 fn main() {
     let args: Vec<String> = env::args().collect();  
@@ -17,6 +19,8 @@ fn main() {
         3 => println!("{:?}", exercice3::compute_results(input)),
         4 => println!("{:?}", exercice4::compute_results(input)),
         5 => println!("{:?}", exercice5::compute_results(input)),
+        6 => println!("{:?}", exercice6::compute_results(input)),
+        7 => println!("{:?}", exercice7::compute_results(input)),
         _ => panic!("Pas d'exercice")
         
     }

@@ -1,5 +1,3 @@
-use core::time;
-
 pub fn compute_results(input: Vec<String>) -> (u32, u32) {
     let instructions: Vec<(u32, u32, u32, u32, u32)> = parse_input(input);
     return (solve(instructions),  0);
