@@ -10,7 +10,7 @@ const MAX_DISTANCE: u32 = 10000;
 
 pub fn compute_results(input: Vec<String>) -> (u32, u32) {
     let instructions = parse_input(input);
-    return (0, solve_part2(&instructions));
+    return (solve(&instructions), solve_part2(&instructions));
 }
 
 fn solve_part2(instructions: &Vec<(u32, u32)>) -> u32 {
@@ -90,17 +90,6 @@ fn get_all_points_with_infinite_area(map: &HashMap<(u32, u32), i32>) -> Vec<i32>
         .collect::<Vec<i32>>();
 }
 
-fn print_dict(map: &HashMap<(u32, u32), i32>) {
-    for y in MIN_SIZE_MAP..=MAX_SIZE_MAP {
-        let mut line: String = String::new();
-        for x in MIN_SIZE_MAP..=MAX_SIZE_MAP {
-            let char = &map[&(x, y)].to_string().replace("-1", ".");
-
-            line.push_str(char);
-        }
-        dbg!(line);
-    }
-}
 
 fn closest_point_index(instructions: &Vec<(u32, u32)>, coords: (u32, u32)) -> i32 {
     let mut all_distances = instructions
