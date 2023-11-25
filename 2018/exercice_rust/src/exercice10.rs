@@ -1,6 +1,9 @@
-use std::{fs::read, collections::HashMap};
-
 use itertools::Itertools;
+use std::{
+    cmp::max,
+    cmp::{self, min},
+    collections::{HashMap, HashSet},
+};
 
 pub fn compute_results(input: Vec<String>) -> (u32, u32) {
     let instructions = parse_input(input);
@@ -9,30 +12,39 @@ pub fn compute_results(input: Vec<String>) -> (u32, u32) {
 
 fn solve(instructions: &Vec<((i32, i32), (i32, i32))>, max_sec: u32) -> u32 {
     let mut all_stars = instructions.clone();
-    for _ in 0..max_sec {
+    for second in 0..u32::MAX {
         Move_stars(&mut all_stars);
-        if looks_observable(&all_stars){
-            print_stars(&all_stars);
+        let min_y = all_stars.iter().map(|a| a.0 .1).min().unwrap();
+        let max_y = all_stars.iter().map(|a| a.0 .1).max().unwrap();
+        if looks_observable(&min_y, &max_y) {
+            print_stars(&all_stars, &min_y, &max_y, &second);
         }
     }
 
     return 0;
 }
 
-fn print_stars(all_stars: &[((i32, i32), (i32, i32))]){
-    // let mut map: HashMap<(u32, u32), char> = HashMap::new();
-    // for x in -100..100{
-    //     for y in -100..100{
-    //         map.insert((x,y), '.');
-    //     }
-    // }
+fn looks_observable(min: &i32, max: &i32) -> bool {
+    return max - min < 12;
 }
 
-fn looks_observable(all_stars: &[((i32, i32), (i32, i32))]) -> bool {
-    return true;
+fn print_stars(all_stars: &[((i32, i32), (i32, i32))], min_y: &i32, max_y: &i32,second: &u32) {
+    let max_x = all_stars.iter().map(|a| a.0 .0).max().unwrap();
+
+    let min_x = all_stars.iter().map(|a| a.0 .0).min().unwrap();
+    for y in *min_y..*max_y +1{
+        let mut line = String::new();
+        for x in min_x..max_x +1{
+            let curr_coord = (x, y);
+            if all_stars.iter().map(|a| a.0).contains(&curr_coord) {
+                line.push('#');
+            } else {
+                line.push('.')
+            }
+        }
+        println!("{}", line);
+    }
 }
-
-
 
 fn Move_stars(all_stars: &mut Vec<((i32, i32), (i32, i32))>) {
     *all_stars = all_stars
