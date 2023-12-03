@@ -1,7 +1,4 @@
 use aoc_runner_derive::aoc;
-use aoc_runner_derive::aoc_generator;
-use itertools::Itertools;
-
 
 
 #[aoc(day1, part1)]
@@ -22,6 +19,7 @@ fn solve_part1(input: &str) -> usize {
         })
         .sum();
 }
+
 
 #[aoc(day1, part2)]
 fn solve_part2(input: &str) -> usize {

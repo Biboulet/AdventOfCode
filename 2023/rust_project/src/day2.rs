@@ -1,8 +1,6 @@
 use std::cmp::max;
-use std::cmp::min;
 use std::usize;
 use aoc_runner_derive::aoc;
-use aoc_runner_derive::aoc_generator;
 use itertools::Itertools;
 
 
@@ -53,8 +51,8 @@ fn solve_part2(input: &str) -> usize {
 }
 
 fn get_game_power(game: &Vec<Vec<(usize, &str)>>) -> usize {
-    let (minRed, minGreen, minBlue) = get_min_num_of_cube(game);
-    return minRed * minGreen * minBlue;
+    let (min_red, min_green, min_blue) = get_min_num_of_cube(game);
+    return min_red * min_green * min_blue;
 }
 
 fn get_min_num_of_cube(game: &Vec<Vec<(usize, &str)>>) -> (usize, usize, usize) {
