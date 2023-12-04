@@ -1,4 +1,45 @@
 {
   "year": 2023,
-  "parts": []
+  "parts": [
+    {
+      "day": 1,
+      "part": 1,
+      "name": null
+    },
+    {
+      "day": 1,
+      "part": 2,
+      "name": null
+    },
+    {
+      "day": 2,
+      "part": 1,
+      "name": null
+    },
+    {
+      "day": 2,
+      "part": 2,
+      "name": null
+    },
+    {
+      "day": 3,
+      "part": 1,
+      "name": null
+    },
+    {
+      "day": 3,
+      "part": 2,
+      "name": null
+    },
+    {
+      "day": 4,
+      "part": 1,
+      "name": null
+    },
+    {
+      "day": 4,
+      "part": 2,
+      "name": null
+    }
+  ]
 }
