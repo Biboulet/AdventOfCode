@@ -9,44 +9,44 @@ fn main() {
     println!("AOC 2023");
 
     
-    let input_day1 = ArcStr::from(include_str!("../../../../input/2023/day1.txt"));
+    let input_day5 = ArcStr::from(include_str!("../../../../input/2023/day5.txt"));
 
 
     
     {
         let start_time = Instant::now();
 
-        match Factory::day1_part1(input_day1.clone()) {
+        match Factory::day5_part1(input_day5.clone()) {
             Ok(runner) => {
                 let inter_time = Instant::now();
 
                 match runner.try_run() {
                     Ok(result) => {
                         let final_time = Instant::now();
-                        println!("Day 1 - Part 1 : {}\n\tgenerator: {:?},\n\trunner: {:?}\n", result, (inter_time - start_time), (final_time - inter_time));
+                        println!("Day 5 - Part 1 : {}\n\tgenerator: {:?},\n\trunner: {:?}\n", result, (inter_time - start_time), (final_time - inter_time));
                     },
-                    Err(e) => eprintln!("Day 1 - Part 1 : FAILED while running :\n{:#?}\n", e)
+                    Err(e) => eprintln!("Day 5 - Part 1 : FAILED while running :\n{:#?}\n", e)
                 }
             },
-            Err(e) => eprintln!("Day 1 - Part 1 : FAILED while generating :\n{:#?}\n", e)
+            Err(e) => eprintln!("Day 5 - Part 1 : FAILED while generating :\n{:#?}\n", e)
         }
     }
     {
         let start_time = Instant::now();
 
-        match Factory::day1_part2(input_day1.clone()) {
+        match Factory::day5_part2(input_day5.clone()) {
             Ok(runner) => {
                 let inter_time = Instant::now();
 
                 match runner.try_run() {
                     Ok(result) => {
                         let final_time = Instant::now();
-                        println!("Day 1 - Part 2 : {}\n\tgenerator: {:?},\n\trunner: {:?}\n", result, (inter_time - start_time), (final_time - inter_time));
+                        println!("Day 5 - Part 2 : {}\n\tgenerator: {:?},\n\trunner: {:?}\n", result, (inter_time - start_time), (final_time - inter_time));
                     },
-                    Err(e) => eprintln!("Day 1 - Part 2 : FAILED while running :\n{:#?}\n", e)
+                    Err(e) => eprintln!("Day 5 - Part 2 : FAILED while running :\n{:#?}\n", e)
                 }
             },
-            Err(e) => eprintln!("Day 1 - Part 2 : FAILED while generating :\n{:#?}\n", e)
+            Err(e) => eprintln!("Day 5 - Part 2 : FAILED while generating :\n{:#?}\n", e)
         }
     }
 }

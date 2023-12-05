@@ -38,7 +38,6 @@ fn solve_part1(input: &str) -> usize {
 
 #[aoc(day3, part2)]
 fn solve_part2(input: &str) -> usize {
-    return 0;
     let map: HashMap<(usize, usize), char> = parse_input(input);
     let numbers: Vec<Number> = get_numbers(&map, input);
     let gears: Vec<(usize, usize)> = get_gears(&map);
