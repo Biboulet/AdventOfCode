@@ -5,7 +5,7 @@ use std::usize;
 
 #[derive(Clone, Debug)]
 struct Convertor {
-    convertors: Vec<Range>,
+    ranges: Vec<Range>,
 }
 #[derive(Clone, Debug)]
 struct Range {
@@ -16,16 +16,25 @@ struct Range {
 impl Convertor {
     pub fn new(package: &str) -> Self {
         return Convertor {
-            convertors: package
+            ranges: package
                 .split("\n")
                 .skip(1)
                 .map(|line| Range::new(line))
                 .collect_vec(),
         };
     }
+    pub fn reversed(&self) -> Self {
+        return Convertor {
+            ranges: self
+                .ranges
+                .iter()
+                .map(|curr_range| curr_range.reversed())
+                .collect_vec(),
+        };
+    }
     fn convert_number(&self, input_num: &usize) -> usize {
         if let Some(valid_convertor) = self
-            .convertors
+            .ranges
             .iter()
             .find(|curr_range| curr_range.is_in_range(input_num))
         {
@@ -47,6 +56,13 @@ impl Range {
             destination_range_start: args[0],
             source_range_start: args[1],
             range_length: args[2],
+        };
+    }
+    pub fn reversed(&self) -> Self {
+        return Range {
+            destination_range_start: self.source_range_start,
+            source_range_start: self.destination_range_start,
+            range_length: self.range_length,
         };
     }
     fn is_in_range(&self, input_num: &usize) -> bool {
@@ -100,13 +116,38 @@ fn solve_part1(input: &(Vec<usize>, Vec<Convertor>)) -> usize {
 
 #[aoc(day5, part2)]
 fn solve_part2(input: &(Vec<usize>, Vec<Convertor>)) -> usize {
-    let (seeds, convertors) = input;
-    let all_seeds = (0..seeds.len() / 2)
-        .map(|index| {
-            (seeds[index * 2]..seeds[index * 2] + seeds[index * 2 + 1])
-                .into_iter()
-                .collect_vec()
-        })
-        .concat();
-    return solve_part1(&(all_seeds, convertors.to_owned()));
+    let reversed_convertor = input
+        .1
+        .iter()
+        .map(|convertor| convertor.reversed())
+        .rev()
+        .collect_vec();
+
+    let max_location = reversed_convertor
+        .first()
+        .unwrap()
+        .ranges
+        .iter()
+        .map(|curr_range| curr_range.source_range_start + curr_range.range_length)
+        .max()
+        .unwrap();
+
+    for location in 0..max_location {
+        let corresponding_seed = reversed_convertor
+            .iter()
+            .fold(location, |curr_value, curr_convertor| {
+                curr_convertor.convert_number(&curr_value)
+            });
+
+        if is_seed_valid(input.0.clone(), corresponding_seed) {
+            return location;
+        }
+    }
+    unreachable!();
+}
+
+fn is_seed_valid(seeds: Vec<usize>, seed_to_test: usize) -> bool {
+    return (0..seeds.len() / 2)
+        .into_iter()
+        .any(|index| seeds[index * 2] <= seed_to_test && seed_to_test < seeds[index * 2] + seeds[2 * index + 1]);
 }
