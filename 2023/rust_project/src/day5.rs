@@ -116,6 +116,7 @@ fn solve_part1(input: &(Vec<usize>, Vec<Convertor>)) -> usize {
 
 #[aoc(day5, part2)]
 fn solve_part2(input: &(Vec<usize>, Vec<Convertor>)) -> usize {
+    return 0;
     let reversed_convertor = input
         .1
         .iter()

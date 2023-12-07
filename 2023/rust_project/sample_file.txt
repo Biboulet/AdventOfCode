@@ -1,6 +1,10 @@
 use aoc_runner_derive::aoc;
 use aoc_runner_derive::aoc_generator;
-use itertools::Itertools;
+
+#[aoc_generator(dayx)]
+fn parse_input(input: &str) -> Vec<usize>{
+
+}
 
 #[aoc(dayx, part1)]
 fn solve_part1() -> usize{
@@ -13,7 +17,6 @@ fn solve_part2() -> usize{
 }
 
 
-// #[aoc_generator(dayx)]
 
 #[cfg(test)]
 mod tests {
