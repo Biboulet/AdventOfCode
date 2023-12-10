@@ -1,9 +1,0 @@
-[package]
-name = "aoc-autobuild"
-version = "0.3.0"
-authors = ["Grégory Obanos <gregory.obanos@gmail.com>"]
-
-[dependencies]
-rust_project = { path = "../../.." }
-aoc-runner = "0.3"
-
