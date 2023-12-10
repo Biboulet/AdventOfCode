@@ -7,11 +7,11 @@ pub mod day4;
 pub mod day5;
 pub mod day6;
 pub mod day7;
+pub mod day8;
+pub mod day9;
 
 use aoc_runner_derive::aoc_main;
 
 aoc_main! {year = 2023}
 
 //cargo aoc input pr télécharger l'input du jour (-d -y)
-// #[aoc(dayx, partx)]
-// #[aoc_generator(day10)]
