@@ -1,9 +1,9 @@
-use itertools::{enumerate, Itertools};
+use itertools::Itertools;
 use std::collections::{HashMap, HashSet};
 use std::vec;
 advent_of_code::solution!(10);
 
-type coord = (i32, i32);
+type Coord = (i32, i32);
 
 pub fn part_one(input: &str) -> Option<usize> {
     let (map, start) = parse_input(input);
@@ -43,7 +43,7 @@ fn get_area(
     start_of_filling_big_map: &(i32, i32),
 ) -> usize {
     let mut result: usize = 0;
-    let mut seen: HashSet<coord> = HashSet::new();
+    let mut seen: HashSet<Coord> = HashSet::new();
     let mut q: Vec<(i32, i32)> = vec![*start_of_filling_big_map];
 
     while !q.is_empty() {
@@ -68,11 +68,11 @@ fn get_area(
 }
 
 //only the char from the main loop
-fn get_filtered_char_map(input: &str, all_pos_from_loop: Vec<coord>) -> HashMap<coord, char> {
-    let mut map: HashMap<coord, char> = HashMap::new();
+fn get_filtered_char_map(input: &str, all_pos_from_loop: Vec<Coord>) -> HashMap<Coord, char> {
+    let mut map: HashMap<Coord, char> = HashMap::new();
     for (y, line) in input.split("\n").enumerate() {
         for (x, curr_char) in line.chars().enumerate() {
-            let curr_coord: coord = (x as i32, y as i32);
+            let curr_coord: Coord = (x as i32, y as i32);
             if all_pos_from_loop.contains(&curr_coord) {
                 map.insert(curr_coord, curr_char);
             } else {
@@ -83,8 +83,8 @@ fn get_filtered_char_map(input: &str, all_pos_from_loop: Vec<coord>) -> HashMap<
     return map.clone();
 }
 
-fn get_zoomed_char_map(char_map: HashMap<coord, char>) -> HashMap<coord, char> {
-    let mut zoomed_char_map: HashMap<coord, char> = HashMap::new();
+fn get_zoomed_char_map(char_map: HashMap<Coord, char>) -> HashMap<Coord, char> {
+    let mut zoomed_char_map: HashMap<Coord, char> = HashMap::new();
 
     for (coord, char) in char_map {
         for (sub_coord, sub_char) in get_zoomed_char(char) {
@@ -97,7 +97,7 @@ fn get_zoomed_char_map(char_map: HashMap<coord, char>) -> HashMap<coord, char> {
     return zoomed_char_map.clone();
 }
 
-fn get_zoomed_char(curr_char: char) -> Vec<(coord, char)> {
+fn get_zoomed_char(curr_char: char) -> Vec<(Coord, char)> {
     match curr_char {
         '|' => {
             return vec![
@@ -214,8 +214,8 @@ fn get_zoomed_char(curr_char: char) -> Vec<(coord, char)> {
     }
 }
 
-fn navigate(origin: &coord, first_move: &coord, map: &HashMap<coord, Vec<coord>>) -> Vec<coord> {
-    let mut all_positions_of_the_loop: Vec<coord> = vec![*origin];
+fn navigate(origin: &Coord, first_move: &Coord, map: &HashMap<Coord, Vec<Coord>>) -> Vec<Coord> {
+    let mut all_positions_of_the_loop: Vec<Coord> = vec![*origin];
     let mut previous_coord = *origin;
     let mut current_coord = *first_move;
 
@@ -233,12 +233,12 @@ fn navigate(origin: &coord, first_move: &coord, map: &HashMap<coord, Vec<coord>>
     return all_positions_of_the_loop.clone();
 }
 
-fn parse_input(input: &str) -> (HashMap<coord, Vec<coord>>, coord) {
+fn parse_input(input: &str) -> (HashMap<Coord, Vec<Coord>>, Coord) {
     let mut start = (0, 0);
-    let mut map: HashMap<coord, Vec<coord>> = HashMap::new();
+    let mut map: HashMap<Coord, Vec<Coord>> = HashMap::new();
     for (y, line) in input.split("\n").enumerate() {
         for (x, curr_char) in line.chars().enumerate() {
-            let curr_coord: coord = (x as i32, y as i32);
+            let curr_coord: Coord = (x as i32, y as i32);
 
             if curr_char == 'S' {
                 start = curr_coord;
@@ -255,7 +255,7 @@ fn parse_input(input: &str) -> (HashMap<coord, Vec<coord>>, coord) {
     return (map.clone(), start.clone());
 }
 
-fn get_linked_coord(curr_coord: coord, curr_char: char) -> Vec<coord> {
+fn get_linked_coord(curr_coord: Coord, curr_char: char) -> Vec<Coord> {
     return match curr_char {
         '|' => vec![
             (curr_coord.0, curr_coord.1 + 1),
@@ -287,7 +287,7 @@ fn get_linked_coord(curr_coord: coord, curr_char: char) -> Vec<coord> {
     };
 }
 
-fn get_all_positive_adjacent_coords(key: &coord) -> Vec<coord> {
+fn get_all_positive_adjacent_coords(key: &Coord) -> Vec<Coord> {
     return vec![
         (key.0 - 1, key.1),
         (key.0 + 1, key.1),

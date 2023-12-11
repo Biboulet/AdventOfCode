@@ -14,17 +14,20 @@ fn get_all_points_with_infinite_area(map: &HashMap<(u32, u32), i32>) -> Vec<i32>
         .collect::<Vec<i32>>();
 }
 
-fn print_dict(map: &HashMap<(u32, u32), i32>) {
-    for y in (MIN_SIZE_MAP..=MAX_SIZE_MAP) {
+fn print_dict(map: &HashMap<(usize, usize), char>) {
+    let x_min = map.keys().map(|(x, _)| x).min().unwrap();
+    let y_min = map.keys().map(|(_, y)| y).min().unwrap();
+    let x_max = map.keys().map(|(x, _)| x).max().unwrap();
+    let y_max = map.keys().map(|(_, y)| y).max().unwrap();
+    for y in *y_min..=*y_max {
         let mut line: String = String::new();
-        for x in (MIN_SIZE_MAP..MAX_SIZE_MAP) {
-            let mut char = &map[&(x, y)].to_string().replace("-1", ".");
-
-            line.push_str(char);
+        for x in *x_min..=*x_max {
+            line.push_str(map[&(x, y)].to_string().as_str());
         }
-        dbg!(line);
+        println!("{}", line);
     }
 }
+
 fn is_edge(coords: &(u32, u32)) -> bool {
     return coords.0 == MIN_SIZE_MAP
         || coords.0 == MAX_SIZE_MAP
