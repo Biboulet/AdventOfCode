@@ -110,7 +110,7 @@ fn get_zoomed_char(curr_char: char) -> Vec<(Coord, char)> {
                 ((0, 2), 'i'),
                 ((1, 2), '|'),
                 ((2, 2), 'i'),
-            ]
+            ];
         }
 
         '-' => {
@@ -124,7 +124,7 @@ fn get_zoomed_char(curr_char: char) -> Vec<(Coord, char)> {
                 ((0, 2), 'i'),
                 ((1, 2), 'i'),
                 ((2, 2), 'i'),
-            ]
+            ];
         }
 
         'L' => {
@@ -138,7 +138,7 @@ fn get_zoomed_char(curr_char: char) -> Vec<(Coord, char)> {
                 ((0, 2), 'i'),
                 ((1, 2), 'i'),
                 ((2, 2), 'i'),
-            ]
+            ];
         }
 
         'J' => {
@@ -152,7 +152,7 @@ fn get_zoomed_char(curr_char: char) -> Vec<(Coord, char)> {
                 ((0, 2), 'i'),
                 ((1, 2), 'i'),
                 ((2, 2), 'i'),
-            ]
+            ];
         }
 
         '7' => {
@@ -166,7 +166,7 @@ fn get_zoomed_char(curr_char: char) -> Vec<(Coord, char)> {
                 ((0, 2), 'i'),
                 ((1, 2), '|'),
                 ((2, 2), 'i'),
-            ]
+            ];
         }
 
         'F' => {
@@ -180,7 +180,7 @@ fn get_zoomed_char(curr_char: char) -> Vec<(Coord, char)> {
                 ((0, 2), 'i'),
                 ((1, 2), '|'),
                 ((2, 2), 'i'),
-            ]
+            ];
         }
 
         '.' => {
@@ -194,7 +194,7 @@ fn get_zoomed_char(curr_char: char) -> Vec<(Coord, char)> {
                 ((0, 2), '.'),
                 ((1, 2), '.'),
                 ((2, 2), '.'),
-            ]
+            ];
         }
         //cas particulier a faire a la main flemme de coder
         'S' => {
@@ -208,7 +208,7 @@ fn get_zoomed_char(curr_char: char) -> Vec<(Coord, char)> {
                 ((0, 2), 'i'),
                 ((1, 2), '|'),
                 ((2, 2), 'S'),
-            ]
+            ];
         }
         _ => panic!(),
     }
@@ -243,11 +243,10 @@ fn parse_input(input: &str) -> (HashMap<Coord, Vec<Coord>>, Coord) {
             if curr_char == 'S' {
                 start = curr_coord;
             }
-            let linked_coord = get_linked_coord(curr_coord, curr_char)
+            let linked_coord: Vec<Coord> = get_linked_coord(curr_coord, curr_char)
                 .iter()
                 .filter(|coords| coords.0 >= 0 && coords.1 >= 0)
-                .map(|a| *a)
-                .collect_vec();
+                .cloned().collect_vec();
 
             map.insert(curr_coord, linked_coord);
         }
@@ -294,8 +293,8 @@ fn get_all_positive_adjacent_coords(key: &Coord) -> Vec<Coord> {
         (key.0, key.1 - 1),
         (key.0, key.1 + 1),
     ]
-    .iter()
-    .filter(|(a, b)| a >= &0 && b >= &0)
-    .map(|(a, b)| (*a, *b))
-    .collect_vec();
+        .iter()
+        .filter(|(a, b)| a >= &0 && b >= &0)
+        .map(|(a, b)| (*a, *b))
+        .collect_vec();
 }

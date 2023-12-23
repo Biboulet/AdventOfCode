@@ -13,10 +13,6 @@ pub fn solve_part2(instructions: &Vec<i32>) -> i32 {
                 
         }                                   
 
-
-
-
-
                                                     
     }).expect("jsp");
     // loop {
