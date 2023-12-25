@@ -1,12 +1,12 @@
 use std::{
-    collections::{btree_map::Keys, HashMap},
+    collections::HashMap,
     vec,
 };
 
 use itertools::Itertools;
 
 advent_of_code::solution!(13);
-type coord = (usize, usize);
+type Coord = (usize, usize);
 
 pub fn part_one(input: &str) -> Option<i32> {
     let patterns = parse_input(input);
@@ -48,20 +48,6 @@ fn get_modified_valid_pattern_value(pattern: &HashMap<(usize, usize), char>) -> 
         .concat()
         .iter()
         .find(|val| **val != default_pattern_value).unwrap();
-}
-
-fn print_dict(map: &HashMap<(usize, usize), char>) {
-    let x_min = map.keys().map(|(x, _)| x).min().unwrap();
-    let y_min = map.keys().map(|(_, y)| y).min().unwrap();
-    let x_max = map.keys().map(|(x, _)| x).max().unwrap();
-    let y_max = map.keys().map(|(_, y)| y).max().unwrap();
-    for y in *y_min..=*y_max {
-        let mut line: String = String::new();
-        for x in *x_min..=*x_max {
-            line.push_str(map[&(x, y)].to_string().as_str());
-        }
-        println!("{}", line);
-    }
 }
 
 fn get_pattern_value(pattern: &HashMap<(usize, usize), char>) -> Result<Vec<i32>, &str> {
@@ -161,7 +147,7 @@ fn get_vertical_mirror(pattern: &HashMap<(usize, usize), char>) -> Vec<i32> {
     return all_vertical_axis.clone();
 }
 
-fn parse_input(input: &str) -> Vec<HashMap<coord, char>> {
+fn parse_input(input: &str) -> Vec<HashMap<Coord, char>> {
     return input
         .split("\n\n")
         .map(|pattern| parse_pattern(pattern))

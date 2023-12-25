@@ -22,7 +22,8 @@ fn print_dict(map: &HashMap<(usize, usize), char>) {
     for y in *y_min..=*y_max {
         let mut line: String = String::new();
         for x in *x_min..=*x_max {
-            line.push_str(map[&(x, y)].to_string().as_str());
+            let char = &map.get(&(x, y)).unwrap_or(&'.').to_string();
+            line.push_str(char.as_str());
         }
         println!("{}", line);
     }
