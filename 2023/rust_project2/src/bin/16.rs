@@ -6,7 +6,7 @@ use std::{
 use itertools::Itertools;
 use num::Complex;
 advent_of_code::solution!(16);
-type Coord = (Complex<i32>);
+type Coord = Complex<i32>;
 #[derive(Clone, Copy, PartialEq, Debug, Hash, Eq)]
 enum Direction {
     Up,
