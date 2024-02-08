@@ -54,3 +54,11 @@ fn get_next_position(direction: Direction) -> Coord {
         Direction::Right => Complex::<i32>::new(1, 0),
     };
 }
+fn get_adjacent_position(curr_coord: Coord) -> Vec<Coord> {
+    return vec![
+        curr_coord + Complex::<i32>::new(0, -1),
+        curr_coord + Complex::<i32>::new(0, 1),
+        curr_coord + Complex::<i32>::new(-1, 0),
+        curr_coord + Complex::<i32>::new(1, 0),
+    ];
+}
