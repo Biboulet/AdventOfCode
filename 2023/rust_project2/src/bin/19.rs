@@ -101,12 +101,11 @@ fn get_num_of_valid_inputs(
             }
         } else {
             // the var must be in that range in order to fullfil the condition
-            let mut valid_interval: Interval = HashSet::new();
-            if curr_instr.var_is_greater {
-                valid_interval = (curr_instr.const_num + 1..=4000).collect();
+            let valid_interval: Interval = if curr_instr.var_is_greater {
+                (curr_instr.const_num + 1..=4000).collect()
             } else {
-                valid_interval = (0..=(curr_instr.const_num as i32 - 1) as u32).collect()
-            }
+                (0..=(curr_instr.const_num as i32 - 1) as u32).collect()
+            };
             let var_name = curr_instr.var_name;
             let new_interval: HashSet<u32> = valid_interval
                 .intersection(curr_intervals.get(&var_name).unwrap())
@@ -124,8 +123,13 @@ fn get_num_of_valid_inputs(
                 .get(&var_name)
                 .unwrap()
                 .iter()
-                .filter(|ele| !new_interval.contains(&ele))
-                .map(|a| *a)
+                .filter_map(|ele| {
+                    if !new_interval.contains(&ele) {
+                        Some(*ele)
+                    } else {
+                        None
+                    }
+                })
                 .collect();
             curr_intervals.insert(var_name, remaining_interval);
 
