@@ -2,7 +2,7 @@ advent_of_code::solution!(1);
 
 pub fn part_one(input: &str) -> Option<usize> {
     Some(input
-        .split("\n")
+        .split('\n')
         .map(|line| {
             let first_digit: usize = line
                 .chars()
@@ -13,7 +13,7 @@ pub fn part_one(input: &str) -> Option<usize> {
                 .rev()
                 .find_map(|a| a.to_string().parse().ok())
                 .unwrap();
-            return 10 * first_digit + second_digit;
+            10 * first_digit + second_digit
         })
         .sum())
 }

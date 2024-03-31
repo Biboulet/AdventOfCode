@@ -32,14 +32,14 @@ struct Number {
 
 fn parse_input(input: &str) -> HashMap<(usize, usize), char> {
     input
-        .split("\n")
+        .split('\n')
         .enumerate()
         .fold(&mut HashMap::new(), |map, (index_y, curr_line)| {
             curr_line.chars().enumerate().fold(
                 map,
                 |map: &mut HashMap<(usize, usize), char>, (index_x, curr_char)| {
                     map.insert((index_x, index_y), curr_char);
-                    return map;
+                    map
                 },
             )
         })
@@ -64,7 +64,7 @@ fn get_gear_ratio(curr_gear: &(usize, usize), numbers: &Vec<Number>) -> usize {
     if adjacent_numbers.len() == 2 {
         return adjacent_numbers[0].value * adjacent_numbers[1].value;
     }
-    return 0;
+    0
 }
 
 fn get_gears(map: &HashMap<(usize, usize), char>) -> Vec<(usize, usize)> {
@@ -74,8 +74,8 @@ fn get_gears(map: &HashMap<(usize, usize), char>) -> Vec<(usize, usize)> {
 }
 
 fn get_numbers<'a>(map: &'a HashMap<(usize, usize), char>, input: &'a str) -> Vec<Number> {
-    let max_ysize = input.split("\n").count();
-    let max_xsize = input.split("\n").nth(0).unwrap().len();
+    let max_ysize = input.split('\n').count();
+    let max_xsize = input.split('\n').next().unwrap().len();
     let mut numbers: Vec<Number> = vec![];
 
     let mut current_num: String = String::new();
@@ -89,20 +89,18 @@ fn get_numbers<'a>(map: &'a HashMap<(usize, usize), char>, input: &'a str) -> Ve
             if char.is_ascii_digit() {
                 current_num.push(*char);
                 all_positions_num.push(key);
-            } else {
-                if !current_num.is_empty() {
-                    numbers.push(Number {
-                        positions_occupied: all_positions_num.clone(),
-                        value: current_num.parse::<usize>().unwrap(),
-                        is_valid: number_is_valid(&all_positions_num, &map, max_xsize, max_ysize),
-                    });
-                    current_num.clear();
-                    all_positions_num.clear();
-                }
+            } else if !current_num.is_empty() {
+                numbers.push(Number {
+                    positions_occupied: all_positions_num.clone(),
+                    value: current_num.parse::<usize>().unwrap(),
+                    is_valid: number_is_valid(&all_positions_num, map, max_xsize, max_ysize),
+                });
+                current_num.clear();
+                all_positions_num.clear();
             }
         }
     }
-    return numbers.clone();
+    numbers.clone()
 }
 
 fn number_is_valid(
@@ -113,7 +111,7 @@ fn number_is_valid(
 ) -> bool {
     all_positions_num
         .iter()
-        .map(|key| get_all_positive_adjacent_coords(key))
+        .map(get_all_positive_adjacent_coords)
         .concat()
         .iter()
         .filter(|(x, y)| x < &max_x && y < &max_y)
@@ -123,16 +121,14 @@ fn number_is_valid(
 }
 
 fn get_all_positive_adjacent_coords(key: &(usize, usize)) -> Vec<(usize, usize)> {
-    return vec![
-        ((key.0 as i32) - 1, (key.1 as i32) - 1),
+    return [((key.0 as i32) - 1, (key.1 as i32) - 1),
         ((key.0 as i32) - 1, key.1 as i32),
         ((key.0 as i32) - 1, (key.1 as i32) + 1),
         ((key.0 as i32) + 1, (key.1 as i32) - 1),
         ((key.0 as i32) + 1, key.1 as i32),
         ((key.0 as i32) + 1, (key.1 as i32) + 1),
         (key.0 as i32, (key.1 as i32) - 1),
-        (key.0 as i32, (key.1 as i32) + 1),
-    ]
+        (key.0 as i32, (key.1 as i32) + 1)]
         .iter()
         .filter(|(a, b)| a >= &0 && b >= &0)
         .map(|(a, b)| (*a as usize, *b as usize))

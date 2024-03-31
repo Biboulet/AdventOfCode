@@ -25,7 +25,7 @@ pub fn part_two(input: &str) -> Option<i32> {
     Some(
         patterns
             .iter()
-            .map(|pattern| get_modified_valid_pattern_value(pattern))
+            .map(get_modified_valid_pattern_value)
             .sum(),
     )
 }
@@ -65,7 +65,7 @@ fn get_pattern_value(pattern: &HashMap<(usize, usize), char>) -> Result<Vec<i32>
     for curr_vertical_axis in vertical_mirror {
         all_values.push(curr_vertical_axis + 1)
     }
-    return Ok(all_values.clone());
+    Ok(all_values.clone())
 }
 
 fn get_horizontal_mirror(pattern: &HashMap<(usize, usize), char>) -> Vec<i32> {
@@ -75,20 +75,16 @@ fn get_horizontal_mirror(pattern: &HashMap<(usize, usize), char>) -> Vec<i32> {
 
     for y in 0..*y_max {
         let lines_before: Vec<Vec<char>> = (0..=y)
-            .into_iter()
             .map(|sub_y| {
                 (0..=*x_max)
-                    .into_iter()
                     .map(|sub_x| pattern[&(sub_x, sub_y)])
                     .collect_vec()
             })
             .rev()
             .collect_vec();
         let lines_after: Vec<Vec<char>> = (y + 1..=*y_max)
-            .into_iter()
             .map(|sub_y| {
                 (0..=*x_max)
-                    .into_iter()
                     .map(|sub_x| pattern[&(sub_x, sub_y)])
                     .collect_vec()
             })
@@ -106,7 +102,7 @@ fn get_horizontal_mirror(pattern: &HashMap<(usize, usize), char>) -> Vec<i32> {
             all_horizontal_axis.push(y as i32);
         }
     }
-    return all_horizontal_axis.clone();
+    all_horizontal_axis.clone()
 }
 fn get_vertical_mirror(pattern: &HashMap<(usize, usize), char>) -> Vec<i32> {
     let mut all_vertical_axis = vec![];
@@ -115,10 +111,8 @@ fn get_vertical_mirror(pattern: &HashMap<(usize, usize), char>) -> Vec<i32> {
 
     for x in 0..*x_max {
         let row_before: Vec<Vec<char>> = (0..=x)
-            .into_iter()
             .map(|sub_x| {
                 (0..=*y_max)
-                    .into_iter()
                     .map(|sub_y| pattern[&(sub_x, sub_y)])
                     .collect_vec()
             })
@@ -126,10 +120,8 @@ fn get_vertical_mirror(pattern: &HashMap<(usize, usize), char>) -> Vec<i32> {
             .collect_vec();
 
         let row_after: Vec<Vec<char>> = (x + 1..=*x_max)
-            .into_iter()
             .map(|sub_x| {
                 (0..=*y_max)
-                    .into_iter()
                     .map(|sub_y| pattern[&(sub_x, sub_y)])
                     .collect_vec()
             })
@@ -144,22 +136,22 @@ fn get_vertical_mirror(pattern: &HashMap<(usize, usize), char>) -> Vec<i32> {
             all_vertical_axis.push(x as i32);
         }
     }
-    return all_vertical_axis.clone();
+    all_vertical_axis.clone()
 }
 
 fn parse_input(input: &str) -> Vec<HashMap<Coord, char>> {
     return input
         .split("\n\n")
-        .map(|pattern| parse_pattern(pattern))
+        .map(parse_pattern)
         .collect_vec();
 }
 
 fn parse_pattern(pattern: &str) -> HashMap<(usize, usize), char> {
     let mut map = HashMap::new();
-    for (y, line) in pattern.split("\n").enumerate() {
+    for (y, line) in pattern.split('\n').enumerate() {
         for (x, char) in line.chars().enumerate() {
             map.insert((x, y), char);
         }
     }
-    return map.clone();
+    map.clone()
 }

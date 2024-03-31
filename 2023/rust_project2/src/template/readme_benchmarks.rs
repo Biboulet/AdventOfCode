@@ -104,7 +104,7 @@ pub fn update(timings: Vec<Timings>, total_millis: f64) -> Result<(), Error> {
 
 #[cfg(feature = "test_lib")]
 mod tests {
-    use super::{update_content, Timings, MARKER};
+    use super::{Timings};
     use crate::day;
 
     fn get_mock_timings() -> Vec<Timings> {

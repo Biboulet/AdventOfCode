@@ -32,8 +32,8 @@ fn get_longest_valid_path(map: HashMap<Coord, char>, is_p2: bool) -> u32 {
         position: Complex::new(1, 1),
         visited_position: HashSet::from_iter([Complex::new(1, 0)]),
     }];
-    while !q.is_empty() {
-        let current_path = q.pop().unwrap();
+    while let Some(current_path) = q.pop() {
+        
         if is_arrival(&map, current_path.position) {
             valid_paths.push(current_path.clone());
             continue;
@@ -48,7 +48,7 @@ fn get_longest_valid_path(map: HashMap<Coord, char>, is_p2: bool) -> u32 {
         ) {
             q.push(Path {
                 length: current_path.length + 1,
-                position: adjacent_valid_pos.clone(),
+                position: adjacent_valid_pos,
                 visited_position: new_visited_position.clone(),
             })
         }
@@ -77,19 +77,18 @@ fn get_valid_adjacent_pos(
     }
     .iter()
     .filter(|adj_coord| {
-        *map.get(*adj_coord).unwrap() != '#' && !visited_position.contains(&adj_coord)
-    })
-    .map(|ele| *ele)
+        *map.get(*adj_coord).unwrap() != '#' && !visited_position.contains(adj_coord)
+    }).copied()
     .collect();
 }
 // Up ; Down ; Left ; Right
 fn get_adjacent_position(curr_coord: Coord) -> Vec<Coord> {
-    return vec![
+    vec![
         curr_coord + Complex::<i32>::new(0, -1),
         curr_coord + Complex::<i32>::new(0, 1),
         curr_coord + Complex::<i32>::new(-1, 0),
         curr_coord + Complex::<i32>::new(1, 0),
-    ];
+    ]
 }
 
 fn is_arrival(map: &HashMap<Coord, char>, position: Coord) -> bool {
@@ -104,5 +103,5 @@ fn parse_input(input: &str) -> HashMap<Complex<i32>, char> {
             map.insert(Complex::new(x as i32, y as i32), char);
         }
     }
-    return map.clone();
+    map.clone()
 }

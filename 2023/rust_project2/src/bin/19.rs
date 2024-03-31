@@ -18,14 +18,14 @@ impl Instruction {
             return true;
         }
         if self.var_is_greater {
-            return var > self.const_num;
+            var > self.const_num
         } else {
-            return var < self.const_num;
+            var < self.const_num
         }
     }
 
     fn new(curr_instruction_input: &str) -> Self {
-        if !curr_instruction_input.contains(":") {
+        if !curr_instruction_input.contains(':') {
             return Instruction {
                 is_final_instr: true,
                 const_num: 0,
@@ -38,11 +38,11 @@ impl Instruction {
             is_final_instr: false,
             var_name: curr_instruction_input.chars().next().unwrap(),
             var_is_greater: curr_instruction_input.chars().nth(1).unwrap() == '>',
-            const_num: curr_instruction_input.split(":").next().unwrap()[2..]
+            const_num: curr_instruction_input.split(':').next().unwrap()[2..]
                 .parse()
                 .unwrap(),
             output: curr_instruction_input
-                .split(":")
+                .split(':')
                 .nth(1)
                 .unwrap()
                 .to_string(),
@@ -60,7 +60,7 @@ pub fn part_one(input: &str) -> Option<u32> {
                 if input_is_accepted(curr_input, &workflows) {
                     return curr_input.values().sum::<u32>();
                 } else {
-                    return 0;
+                    0
                 }
             })
             .sum(),
@@ -89,9 +89,7 @@ fn get_num_of_valid_inputs(
     for curr_instr in workflows.get(curr_workflow).unwrap() {
         if curr_instr.is_final_instr {
             if curr_instr.output == "A" {
-                total += curr_intervals
-                    .iter()
-                    .map(|(_, set)| set.len() as u64)
+                total += curr_intervals.values().map(|set| set.len() as u64)
                     .product::<u64>();
             } else if curr_instr.output == "R" {
                 continue;
@@ -108,8 +106,7 @@ fn get_num_of_valid_inputs(
             };
             let var_name = curr_instr.var_name;
             let new_interval: HashSet<u32> = valid_interval
-                .intersection(curr_intervals.get(&var_name).unwrap())
-                .map(|a| *a)
+                .intersection(curr_intervals.get(&var_name).unwrap()).copied()
                 .collect();
 
             //can't satisfy the condition from this state
@@ -124,7 +121,7 @@ fn get_num_of_valid_inputs(
                 .unwrap()
                 .iter()
                 .filter_map(|ele| {
-                    if !new_interval.contains(&ele) {
+                    if !new_interval.contains(ele) {
                         Some(*ele)
                     } else {
                         None
@@ -134,9 +131,7 @@ fn get_num_of_valid_inputs(
             curr_intervals.insert(var_name, remaining_interval);
 
             if curr_instr.output == "A" {
-                total += all_new_intervals
-                    .iter()
-                    .map(|(_, set)| set.len() as u64)
+                total += all_new_intervals.values().map(|set| set.len() as u64)
                     .product::<u64>();
             } else if curr_instr.output == "R" {
                 continue;
@@ -145,7 +140,7 @@ fn get_num_of_valid_inputs(
             }
         }
     }
-    return total;
+    total
 }
 
 fn input_is_accepted(
@@ -171,12 +166,12 @@ fn parse_input(input: &str) -> (HashMap<&str, Vec<Instruction>>, Vec<HashMap<cha
     let workflows = input.split("\r\n\r\n").next().unwrap().split("\r\n").fold(
         HashMap::new(),
         |mut map, curr_line| {
-            let mut args = curr_line.split("{");
+            let mut args = curr_line.split('{');
             map.insert(
                 args.next().unwrap(),
-                parse_instruction(args.next().unwrap().trim_end_matches("}")),
+                parse_instruction(args.next().unwrap().trim_end_matches('}')),
             );
-            return map;
+            map
         },
     );
 
@@ -188,21 +183,21 @@ fn parse_input(input: &str) -> (HashMap<&str, Vec<Instruction>>, Vec<HashMap<cha
         .map(|curr_line| {
             let args = &curr_line[1..curr_line.len() - 1];
 
-            return args.split(",").fold(HashMap::new(), |mut map, curr_var| {
+            return args.split(',').fold(HashMap::new(), |mut map, curr_var| {
                 map.insert(
                     curr_var.chars().next().unwrap(),
-                    curr_var.split("=").nth(1).unwrap().parse::<u32>().unwrap(),
+                    curr_var.split('=').nth(1).unwrap().parse::<u32>().unwrap(),
                 );
-                return map;
+                map
             });
         })
         .collect_vec();
-    return (workflows, inputs);
+    (workflows, inputs)
 }
 
 fn parse_instruction(all_instructions_input: &str) -> Vec<Instruction> {
     return all_instructions_input
-        .split(",")
-        .map(|curr_instruction_input| Instruction::new(curr_instruction_input))
+        .split(',')
+        .map(Instruction::new)
         .collect_vec();
 }
